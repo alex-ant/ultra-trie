@@ -32,6 +32,22 @@ func (n *node) createPathChildren(path string, data interface{}) {
 	n.children[key].createPathChildren(cutPath, data)
 }
 
+func (n *node) lookupPathChildren(path string) bool {
+	key := path[0]
+
+	_, childExists := n.children[key]
+	if !childExists {
+		return false
+	}
+
+	cutPath := path[1:len(path)]
+	if len(cutPath) == 0 {
+		return true
+	}
+
+	return n.children[key].lookupPathChildren(cutPath)
+}
+
 ////////////////////////////////
 
 // Tree contains Trie structure.
@@ -45,6 +61,33 @@ func New() *Tree {
 	return &Tree{
 		children: make(map[byte]*node),
 	}
+}
+
+// PrefixExists tells whether the requested prefix exists in the tree.
+func (t *Tree) PrefixExists(path string) bool {
+	// skip if no path provided
+	if path == "" {
+		return false
+	}
+
+	// manage mutex
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	// check the base node for prefix
+	key := path[0]
+	_, baseNodeExists := t.children[key]
+	if !baseNodeExists {
+		return false
+	}
+
+	// return true if the node is the last one requested
+	if len(path) == 1 {
+		return true
+	}
+
+	// lookup path children
+	return t.children[key].lookupPathChildren(path[1:len(path)])
 }
 
 // Add adds a new record to the tree.
