@@ -22,7 +22,7 @@ Trie data structure.
 
 ![smaple](https://github.com/LoudRun/ultra-trie/raw/master/non-code/autocomplete.png "autocomplete")
 
-Text autocomplete is one of the common cases where the algorithm is used.
+Text autocomplete is one of the common use cases.
 
 ### Usage
 
