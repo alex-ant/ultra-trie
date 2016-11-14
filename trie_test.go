@@ -57,4 +57,91 @@ func TestTrie(t *testing.T) {
 		t.Error("invalid prefix exists")
 		return
 	}
+
+	// validate prefix data
+	var mm []Member
+	var mmErr error
+	var mmData sampleData
+	var mmDataOK bool
+
+	// prefix "a"
+	mm, mmErr = tr.GetPrefixMembers("a")
+	if mmErr != nil {
+		t.Errorf("error received while retrieving prefix members: %s", mmErr.Error())
+		return
+	}
+
+	if len(mm) != 1 {
+		t.Errorf("invalid number of prefix members received: %v", mm)
+		return
+	}
+
+	if mm[0].Key != "azm" {
+		t.Errorf("invalid number of prefix member key received: %s", mm[0].Key)
+		return
+	}
+
+	mmData, mmDataOK = mm[0].Data.(sampleData)
+	if !mmDataOK {
+		t.Error("failed to convert member's data into valid structure")
+		return
+	}
+
+	if mmData.field1 != "c" ||
+		mmData.field2 != 3 ||
+		mmData.name != "azm" {
+		t.Error("invalid member's data received")
+		return
+	}
+
+	// prefix "t"
+	mm, mmErr = tr.GetPrefixMembers("t")
+	if mmErr != nil {
+		t.Errorf("error received while retrieving prefix members: %s", mmErr.Error())
+		return
+	}
+
+	if len(mm) != 2 {
+		t.Errorf("invalid number of prefix members received: %v", mm)
+		return
+	}
+
+	// member 1
+	if mm[0].Key != "to" {
+		t.Errorf("invalid number of prefix member key received: %s", mm[0].Key)
+		return
+	}
+
+	mmData, mmDataOK = mm[0].Data.(sampleData)
+	if !mmDataOK {
+		t.Error("failed to convert member's data into valid structure")
+		return
+	}
+
+	if mmData.field1 != "a" ||
+		mmData.field2 != 1 ||
+		mmData.name != "to" {
+		t.Error("invalid member's data received")
+		return
+	}
+
+	// member 2
+	if mm[1].Key != "tea" {
+		t.Errorf("invalid number of prefix member key received: %s", mm[1].Key)
+		return
+	}
+
+	mmData, mmDataOK = mm[1].Data.(sampleData)
+	if !mmDataOK {
+		t.Error("failed to convert member's data into valid structure")
+		return
+	}
+
+	if mmData.field1 != "b" ||
+		mmData.field2 != 2 ||
+		mmData.name != "tea" {
+		t.Error("invalid member's data received")
+		return
+	}
+
 }

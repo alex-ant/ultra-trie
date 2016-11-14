@@ -1,54 +1,9 @@
 package trie
 
-import "sync"
-
-// node represents a separate tree node.
-type node struct {
-	key      byte
-	children map[byte]*node
-	data     interface{}
-}
-
-func newEmptyNode(key byte) *node {
-	return &node{
-		key:      key,
-		children: make(map[byte]*node),
-	}
-}
-
-func (n *node) createPathChildren(path string, data interface{}) {
-	key := path[0]
-
-	_, childExists := n.children[key]
-	if !childExists {
-		n.children[key] = newEmptyNode(key)
-	}
-
-	cutPath := path[1:len(path)]
-	if len(cutPath) == 0 {
-		n.children[key].data = data
-		return
-	}
-	n.children[key].createPathChildren(cutPath, data)
-}
-
-func (n *node) lookupPathChildren(path string) bool {
-	key := path[0]
-
-	_, childExists := n.children[key]
-	if !childExists {
-		return false
-	}
-
-	cutPath := path[1:len(path)]
-	if len(cutPath) == 0 {
-		return true
-	}
-
-	return n.children[key].lookupPathChildren(cutPath)
-}
-
-////////////////////////////////
+import (
+	"fmt"
+	"sync"
+)
 
 // Tree contains Trie structure.
 type Tree struct {
@@ -61,6 +16,45 @@ func New() *Tree {
 	return &Tree{
 		children: make(map[byte]*node),
 	}
+}
+
+// GetPrefixMembers returns a slice of prefix members. Error if the prefix doesn't exist.
+func (t *Tree) GetPrefixMembers(path string) (mm []Member, err error) {
+	// check whether the prefix exists
+	if !t.PrefixExists(path) {
+		err = fmt.Errorf("prefix %s doesn't exist", path)
+		return
+	}
+
+	// manage mutex
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	// get prefix node
+
+	// get base node first
+	key := path[0]
+	baseNode, baseNodeExists := t.children[key]
+	if !baseNodeExists {
+		err = fmt.Errorf("base node %s doesn't exist", string(key))
+		return
+	}
+
+	// return data if the node is the last one requested
+	if len(path) == 1 {
+		mm = baseNode.getAllMembers()
+		return
+	}
+
+	// going deeper
+	var n *node
+	n, err = baseNode.getChildNodeByPath(path[1:len(path)])
+	if err != nil {
+		return
+	}
+
+	mm = n.getAllMembers()
+	return
 }
 
 // PrefixExists tells whether the requested prefix exists in the tree.
@@ -105,7 +99,7 @@ func (t *Tree) Add(path string, data interface{}) {
 	key := path[0]
 	_, baseNodeExists := t.children[key]
 	if !baseNodeExists {
-		t.children[key] = newEmptyNode(key)
+		t.children[key] = newEmptyNode(string(key))
 	}
 
 	// if the base node is the last one requested, adding the data right into it
@@ -115,5 +109,5 @@ func (t *Tree) Add(path string, data interface{}) {
 	}
 
 	// creating chain children
-	t.children[key].createPathChildren(path[1:len(path)], data)
+	t.children[key].createPathChildren(string(key), path[1:len(path)], data)
 }
