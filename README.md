@@ -10,7 +10,10 @@ In addition to classical algorithm of radix tree this package also allows you to
 A common application of a trie is storing a predictive text or autocomplete dictionary. *From Wikipedia:*
 
 ```
-Trie is a kind of search tree—an ordered tree data structure that is used to store a dynamic set or associative array. The position of a node in the tree defines the key with which it is associated. All the descendants of a node have a common prefix of the string associated with that node, and the root is associated with the empty string.
+Trie is a kind of search tree—an ordered tree data structure that is used to store a dynamic set or
+associative array. The position of a node in the tree defines the key with which it is associated.
+All the descendants of a node have a common prefix of the string associated with that node, and the
+root is associated with the empty string.
 ```
 
 ![diagram](https://github.com/LoudRun/ultra-trie/raw/master/non-code/trie.png "trie")
