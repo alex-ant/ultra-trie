@@ -104,7 +104,7 @@ func (t *Tree) Add(path string, data interface{}) {
 
 	// if the base node is the last one requested, adding the data right into it
 	if len(path) == 1 {
-		t.children[key].data = data
+		t.children[key].data = append(t.children[key].data, data)
 		return
 	}
 

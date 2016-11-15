@@ -6,7 +6,7 @@ import "fmt"
 type node struct {
 	key      string
 	children map[byte]*node
-	data     interface{}
+	data     []interface{}
 }
 
 func newEmptyNode(key string) *node {
@@ -24,11 +24,13 @@ type Member struct {
 
 func (n *node) getAllMembers() (mm []Member) {
 	// append node's data
-	if n.data != nil {
-		mm = append(mm, Member{
-			Key:  n.key,
-			Data: n.data,
-		})
+	if len(n.data) != 0 {
+		for _, v := range n.data {
+			mm = append(mm, Member{
+				Key:  n.key,
+				Data: v,
+			})
+		}
 	}
 
 	// loop through children
@@ -51,7 +53,7 @@ func (n *node) createPathChildren(parentKey, path string, data interface{}) {
 
 	cutPath := path[1:len(path)]
 	if len(cutPath) == 0 {
-		n.children[key].data = data
+		n.children[key].data = append(n.children[key].data, data)
 		return
 	}
 	n.children[key].createPathChildren(currentKey, cutPath, data)
