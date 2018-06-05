@@ -16,18 +16,18 @@ All the descendants of a node have a common prefix of the string associated with
 root is associated with the empty string.
 ```
 
-![diagram](https://github.com/LoudRun/ultra-trie/raw/master/non-code/trie.png "trie")
+![diagram](https://github.com/alex-ant/ultra-trie/raw/master/non-code/trie.png "trie")
 
 Trie data structure.
 
-![smaple](https://github.com/LoudRun/ultra-trie/raw/master/non-code/autocomplete.png "autocomplete")
+![smaple](https://github.com/alex-ant/ultra-trie/raw/master/non-code/autocomplete.png "autocomplete")
 
 Text autocomplete is one of the common use cases.
 
 ### Usage
 
 ```bash
-$ go get github.com/LoudRun/ultra-trie
+$ go get github.com/alex-ant/ultra-trie
 ```
 
 ```Go
@@ -37,7 +37,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/LoudRun/ultra-trie"
+	"github.com/alex-ant/ultra-trie"
 )
 
 type sampleData struct {
